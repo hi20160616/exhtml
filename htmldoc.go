@@ -34,6 +34,8 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 		log.SetPrefix("[wait]")
 		log.SetFlags(0)
 		log.Printf("server not responding (%s); retrying...", err)
+		log.SetPrefix("")
+		log.SetFlags(3)
 		time.Sleep(time.Second << uint(tries)) // exponential back-off
 	}
 	return nil, nil, nil
@@ -198,6 +200,42 @@ func ElementsByTag(doc *html.Node, name ...string) []*html.Node {
 		nodes = append(nodes, ElementsByTag(c, name...)...)
 	}
 	return nodes
+}
+
+func ElementsByTag2(raw []byte, tags ...string) []byte {
+	if raw == nil || tags == nil {
+		return nil
+	}
+	z := html.NewTokenizer(bytes.NewReader(raw))
+	var b bytes.Buffer
+	depth := 0
+	for {
+		tt := z.Next()
+		if err := z.Err(); err == io.EOF {
+			break
+		}
+		switch tt {
+		case html.ErrorToken:
+			return []byte(z.Err().Error())
+		case html.TextToken:
+			if depth > 0 {
+				b.Write(z.Text())
+			}
+		case html.StartTagToken, html.EndTagToken:
+			tn, _ := z.TagName()
+			for _, tag := range tags {
+				if string(tn) == tag {
+					b.Write(z.Text())
+				}
+			}
+			if tt == html.StartTagToken {
+				depth++
+			} else {
+				depth--
+			}
+		}
+	}
+	return b.Bytes()
 }
 
 func ElementsByTagAndClass(doc *html.Node, tag, class string) []*html.Node {

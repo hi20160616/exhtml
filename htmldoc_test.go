@@ -58,6 +58,20 @@ func TestElementsByTag(t *testing.T) {
 	}
 }
 
+func TestElementsByTag2(t *testing.T) {
+	u, err = url.Parse("https://www.dw.com/zh/%E6%8B%9C%E7%99%BB%E5%85%A8%E4%BD%93%E7%BE%8E%E5%9B%BD%E5%85%AC%E6%B0%91%E6%9C%AC%E6%9C%88%E5%B0%B1%E9%83%BD%E8%83%BD%E6%8E%A5%E7%A7%8D%E7%96%AB%E8%8B%97/a-57119062")
+	if err != nil {
+		t.Errorf("url Parse err: %v", err)
+	}
+	raw, _, err := GetRawAndDoc(u, 1*time.Minute)
+	if err != nil {
+		t.Errorf("GetRawAndDoc err: %v", err)
+	}
+	a := ElementsByTagAndClass2(raw, "div", "longText")
+	b := ElementsByTag2(a, "p")
+	fmt.Printf("a: %s\n\nb: %s", a, b)
+}
+
 func TestElementsByTagAndClass(t *testing.T) {
 	s, err := ioutil.ReadFile("./test.html")
 	if err != nil {
