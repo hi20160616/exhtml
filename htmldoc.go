@@ -39,7 +39,7 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 					err, "exhtml: GetRawAndDoc: ReadAll",
 				)
 			}
-			doc, err := html.Parse(reader)
+			doc, err := html.Parse(bytes.NewBuffer(raw))
 			return raw, doc, nil
 		}
 		log.SetPrefix("[wait]")
