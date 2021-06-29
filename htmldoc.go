@@ -29,6 +29,10 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 			switch resp.Header.Get("Content-Encoding") {
 			case "gzip":
 				reader, err = gzip.NewReader(resp.Body)
+				if err != nil {
+					return nil, nil, errors.WithMessage(
+						err, "exhtml: GetRawAndDoc: NewReader")
+				}
 				defer reader.Close()
 			default:
 				reader = resp.Body
