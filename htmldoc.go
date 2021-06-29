@@ -3,6 +3,7 @@ package exhtml
 
 import (
 	"bytes"
+	"compress/gzip"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -12,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
 	"golang.org/x/net/html"
 )
 
@@ -23,11 +25,20 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 		resp, err := http.Get(url.String())
 		if err == nil { // success
 			defer resp.Body.Close()
-			raw, err := ioutil.ReadAll(resp.Body)
-			if err != nil {
-				return nil, nil, err
+			var reader io.ReadCloser
+			switch resp.Header.Get("Content-Encoding") {
+			case "gzip":
+				reader, err = gzip.NewReader(resp.Body)
+				defer reader.Close()
+			default:
+				reader = resp.Body
 			}
-			reader := bytes.NewBuffer(raw)
+			raw, err := ioutil.ReadAll(reader)
+			if err != nil {
+				return nil, nil, errors.WithMessage(
+					err, "exhtml: GetRawAndDoc: ReadAll",
+				)
+			}
 			doc, err := html.Parse(reader)
 			return raw, doc, nil
 		}
