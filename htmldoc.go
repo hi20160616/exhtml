@@ -3,7 +3,6 @@ package exhtml
 
 import (
 	"bytes"
-	"compress/gzip"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -25,19 +24,7 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 		resp, err := http.Get(url.String())
 		if err == nil { // success
 			defer resp.Body.Close()
-			var reader io.ReadCloser
-			switch resp.Header.Get("Content-Encoding") {
-			case "gzip":
-				reader, err = gzip.NewReader(resp.Body)
-				if err != nil {
-					return nil, nil, errors.WithMessage(
-						err, "exhtml: GetRawAndDoc: NewReader")
-				}
-				defer reader.Close()
-			default:
-				reader = resp.Body
-			}
-			raw, err := ioutil.ReadAll(reader)
+			raw, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				return nil, nil, errors.WithMessage(
 					err, "exhtml: GetRawAndDoc: ReadAll",
@@ -290,7 +277,7 @@ func ElementsByTagAndClass2(raw []byte, tag, class string) []byte {
 			if tag == t.Data {
 				for _, a := range t.Attr {
 					if a.Key == "class" && a.Val == class {
-						b.Write(z.Raw())
+						b.Write(z.Buffered())
 					}
 				}
 			}
