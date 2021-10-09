@@ -12,16 +12,27 @@ import (
 	"strings"
 	"time"
 
+	"github.com/mmcdole/gofeed"
 	"github.com/pkg/errors"
 	"golang.org/x/net/html"
 )
+
+func request(src string) (*http.Response, error) {
+	client := &http.Client{Timeout: 2 * time.Second}
+	req, err := http.NewRequest("GET", src, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.61 Safari/537.36")
+	return client.Do(req)
+}
 
 // GetRawAndDoc can get html raw bytes and html.Node by rawurl.
 func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node, error) {
 	// Get response form url
 	deadline := time.Now().Add(retryTimeout)
 	for tries := 0; time.Now().Before(deadline); tries++ {
-		resp, err := http.Get(url.String())
+		resp, err := request(url.String())
 		if err == nil { // success
 			defer resp.Body.Close()
 			raw, err := ioutil.ReadAll(resp.Body)
@@ -43,6 +54,23 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 	return nil, nil, nil
 }
 
+func ExtractRss(weburl string) ([]string, error) {
+	resp, err := request(weburl)
+	if err != nil {
+		return nil, err
+	}
+	gf := gofeed.NewParser()
+	feed, err := gf.Parse(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	ls := []string{}
+	for _, e := range feed.Items {
+		ls = append(ls, e.Link)
+	}
+	return ls, nil
+}
+
 // ExtractLinks makes an HTTP GET request to the specified URL, parses
 // the response as HTML, and returns the links in the HTML document.
 func ExtractLinks(weburl string) ([]string, error) {
@@ -50,7 +78,7 @@ func ExtractLinks(weburl string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.Get(weburl)
+	resp, err := request(weburl)
 	if err != nil {
 		return nil, err
 	}

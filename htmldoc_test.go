@@ -12,7 +12,28 @@ import (
 	"golang.org/x/net/html"
 )
 
-var u, err = url.Parse("https://news.ltn.com.tw/news/world/breakingnews/3277899")
+var u, err = url.Parse("https://cn.nikkei.com/industry/itelectric-appliance/46280-2021-10-09-01-47-33.html?tmpl=component&print=1&page=")
+
+func TestExtractRss(t *testing.T) {
+	src := "https://cn.nikkei.com/rss.html"
+	ls, err := ExtractRss(src)
+	if err != nil {
+		t.Error(err)
+	}
+	for _, e := range ls {
+		fmt.Println(e)
+	}
+}
+
+func TestGetRawAndDoc(t *testing.T) {
+	raw, doc, err := GetRawAndDoc(u, 2*time.Second)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	fmt.Println(string(raw))
+	fmt.Println(doc)
+}
 
 func TestDivWithAttr(t *testing.T) {
 	if err != nil {
