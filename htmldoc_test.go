@@ -15,7 +15,7 @@ import (
 var u, err = url.Parse("https://cn.nikkei.com/industry/itelectric-appliance/46280-2021-10-09-01-47-33.html?tmpl=component&print=1&page=")
 
 func TestExtractRss(t *testing.T) {
-	src := "https://cn.nikkei.com/rss.html"
+	src := "https://china.kyodonews.net/rss/news.xml"
 	ls, err := ExtractRss(src)
 	if err != nil {
 		t.Error(err)

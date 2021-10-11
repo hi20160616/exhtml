@@ -18,7 +18,7 @@ import (
 )
 
 func request(src string) (*http.Response, error) {
-	client := &http.Client{Timeout: 2 * time.Second}
+	client := &http.Client{Timeout: 10 * time.Second}
 	req, err := http.NewRequest("GET", src, nil)
 	if err != nil {
 		return nil, err
