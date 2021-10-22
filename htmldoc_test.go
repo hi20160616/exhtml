@@ -281,3 +281,56 @@ func TestElementsRmByTag(t *testing.T) {
 		fmt.Println(doc)
 	}
 }
+
+func TestElementsRmByTagClass(t *testing.T) {
+	s := []byte(testHtml)
+	doc, err := html.Parse(bytes.NewReader(s))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ElementsRmByTagClass(doc, "div", "article-photo")
+	n := ElementsByTagAndClass(doc, "div", "article-photo")
+	if len(n) > 0 {
+		t.Errorf("want 0, got: %v", len(n))
+		fmt.Println(doc)
+	}
+}
+
+var testHtml = `
+<div class="content article-body" style="width: 100%">
+<div class="ExternalClassD4FD9D4E94174110AEAB3E1D8765742B">
+<div class="article-photo">
+<div class="article-photo"><img alt="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hinh anh 1" src="https://cdnimgzh.vietnamplus.vn/t1000/uploaded/wbxx/2021_08_10/tbt.jpg" title="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hình ảnh 1" class="cms-photo" data-photo-original-src="https://cdnimgzh.vietnamplus.vnhttps://cdnimgzh.vietnamplus.vn/t1000/uploaded/afbb/2021_08_10/tbt.jpg" cms-photo-caption="越共中央总书记阮富仲。图自越通社"/><span>越共中央总书记阮富仲。图自越通社</span></div>
+</div>
+<br/>
+越通社河内——接受越通社驻德国记者采访时，德国马恩（Marx-Engels）基金会主席、德国共产党国际委员会成员斯蒂芬·库纳（Stefan Kühner）认为，越南共产党中央委员会总书记阮富仲署名文章“社会主义理论与实践若干问题和越南走向社会主义的道路”已指明越南走向社会主义的道路。<br/>
+<br/>
+斯蒂芬·库纳表示，越共中央总书记阮富仲已具体地阐述了越南在特殊条件和特点中走向社会主义的道路。阮富仲在文章中强调：“跨过资本主义制度是跨过资本主义的压迫、不公平和剥削制度，放弃不符合社会主义制度的不良风气和政治体制，而不是放弃人类在资本主义发展时期所取得的文明成就与价值。当然，继承这些成就需要本着科学和发展观点去选择。” 斯蒂芬·库纳认为，对全球共产主义者来说，该论点已阐明，越南一直在寻找的是走向社会主义道路。<br/>
+<div class="article-photo"><img alt="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hinh anh 2" src="https://cdnimgzh.vietnamplus.vn/t1000/uploaded/wbxx/2021_08_10/chuyengia.jpg" title="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hình ảnh 2" class="cms-photo" data-photo-original-src="https://cdnimgzh.vietnamplus.vnhttps://cdnimgzh.vietnamplus.vn/t1000/uploaded/afbb/2021_08_10/chuyengia.jpg" cms-photo-caption="德国马恩基金会主席斯蒂芬·库纳。图自越通社"/><span>德国马恩基金会主席斯蒂芬·库纳。图自越通社</span></div>
+<br/>
+斯蒂芬·库纳指出，阮富仲总书记在文章中已突出了越南战争后困难，在遭受破败、禁运等的条件下所做出的努力以及越南当前的发展情况。阮富仲指出社会主义建设不能教条化，社会主义制度不仅是通过选举建设政府，同时需要人民的力量，为人民服务。此外，阮富仲还指明越南“社会主义定向市场经济体制”这一概念。<br/>
+<br/>
+阮富仲总书记署名文章进一步指明越南走向社会主义的道路，同时明确生产力的发展对公正、平等的经济体建设注入重要动力。<br/>
+<br/>
+谈及越南共产党的作用，斯蒂芬·库纳强调，这是越南革命取得胜利的决定性因素。他同时表示，在德国共产党第二十三次代表大会上，德国共产党已强调加强各国共产党之间以及国际工人之间的合作有助于巩固全球范围内的革命运动。（完）</div>
+<div style="text-align: right" class="cms-author"><strong> 越通社</strong></div>
+</div>
+<div class="content article-body" style="width: 100%">
+<div class="ExternalClassD4FD9D4E94174110AEAB3E1D8765742B">
+<div class="article-photo">
+<div class="article-photo"><img alt="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hinh anh 1" src="https://cdnimgzh.vietnamplus.vn/t1000/uploaded/wbxx/2021_08_10/tbt.jpg" title="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hình ảnh 1" class="cms-photo" data-photo-original-src="https://cdnimgzh.vietnamplus.vnhttps://cdnimgzh.vietnamplus.vn/t1000/uploaded/afbb/2021_08_10/tbt.jpg" cms-photo-caption="越共中央总书记阮富仲。图自越通社"/><span>越共中央总书记阮富仲。图自越通社</span></div>
+</div>
+<br/>
+越通社河内——接受越通社驻德国记者采访时，德国马恩（Marx-Engels）基金会主席、德国共产党国际委员会成员斯蒂芬·库纳（Stefan Kühner）认为，越南共产党中央委员会总书记阮富仲署名文章“社会主义理论与实践若干问题和越南走向社会主义的道路”已指明越南走向社会主义的道路。<br/>
+<br/>
+斯蒂芬·库纳表示，越共中央总书记阮富仲已具体地阐述了越南在特殊条件和特点中走向社会主义的道路。阮富仲在文章中强调：“跨过资本主义制度是跨过资本主义的压迫、不公平和剥削制度，放弃不符合社会主义制度的不良风气和政治体制，而不是放弃人类在资本主义发展时期所取得的文明成就与价值。当然，继承这些成就需要本着科学和发展观点去选择。” 斯蒂芬·库纳认为，对全球共产主义者来说，该论点已阐明，越南一直在寻找的是走向社会主义道路。<br/>
+<div class="article-photo"><img alt="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hinh anh 2" src="https://cdnimgzh.vietnamplus.vn/t1000/uploaded/wbxx/2021_08_10/chuyengia.jpg" title="德国马恩基金会主席：越共中央总书记阮富仲署名文章指明越南走向社会主义的道路 hình ảnh 2" class="cms-photo" data-photo-original-src="https://cdnimgzh.vietnamplus.vnhttps://cdnimgzh.vietnamplus.vn/t1000/uploaded/afbb/2021_08_10/chuyengia.jpg" cms-photo-caption="德国马恩基金会主席斯蒂芬·库纳。图自越通社"/><span>德国马恩基金会主席斯蒂芬·库纳。图自越通社</span></div>
+<br/>
+斯蒂芬·库纳指出，阮富仲总书记在文章中已突出了越南战争后困难，在遭受破败、禁运等的条件下所做出的努力以及越南当前的发展情况。阮富仲指出社会主义建设不能教条化，社会主义制度不仅是通过选举建设政府，同时需要人民的力量，为人民服务。此外，阮富仲还指明越南“社会主义定向市场经济体制”这一概念。<br/>
+<br/>
+阮富仲总书记署名文章进一步指明越南走向社会主义的道路，同时明确生产力的发展对公正、平等的经济体建设注入重要动力。<br/>
+<br/>
+谈及越南共产党的作用，斯蒂芬·库纳强调，这是越南革命取得胜利的决定性因素。他同时表示，在德国共产党第二十三次代表大会上，德国共产党已强调加强各国共产党之间以及国际工人之间的合作有助于巩固全球范围内的革命运动。（完）</div>
+<div style="text-align: right" class="cms-author"><strong> 越通社</strong></div>
+</div>
+`

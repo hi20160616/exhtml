@@ -206,6 +206,46 @@ func ElementsNext(doc *html.Node) []*html.Node {
 	return nodes
 }
 
+// ElementsRmByTagClass rm nodes
+// if class != "" rm by tag and class else rm just by tag.
+func ElementsRmByTagClass(doc *html.Node, tag, class string) {
+	if tag == "" || doc == nil {
+		return
+	}
+	visitNode := func(n *html.Node) {
+		if n.NextSibling != nil && n.NextSibling.Type == html.ElementNode {
+			if tag == n.NextSibling.Data {
+				if class != "" {
+					for _, a := range n.NextSibling.Attr {
+						if a.Key == "class" && a.Val == class {
+							n.Parent.RemoveChild(n.NextSibling)
+						}
+					}
+				} else {
+					n.Parent.RemoveChild(n.NextSibling)
+				}
+			}
+		}
+	}
+	ForEachNode(doc, visitNode, nil)
+	rmFirstTag := func(n *html.Node) {
+		if n.FirstChild != nil && n.FirstChild.Type == html.ElementNode {
+			if tag == n.FirstChild.Data {
+				if class != "" {
+					for _, a := range n.FirstChild.Attr {
+						if a.Key == "class" && a.Val == class {
+							n.RemoveChild(n.FirstChild)
+						}
+					}
+				} else {
+					n.RemoveChild(n.FirstChild)
+				}
+			}
+		}
+	}
+	ForEachNode(doc, rmFirstTag, nil)
+}
+
 func ElementsRmByTag(doc *html.Node, name ...string) {
 	if len(name) == 0 || doc == nil {
 		return
