@@ -286,6 +286,26 @@ func ElementsByTag2(raw []byte, tags ...string) []byte {
 	return b.Bytes()
 }
 
+func TagWithAttr(doc *html.Node, tag, attr string) []*html.Node {
+	var nodes []*html.Node
+	if attr == "" || tag == "" || doc == nil {
+		return nil
+	}
+	if doc.Type == html.ElementNode {
+		if tag == doc.Data {
+			for _, a := range doc.Attr {
+				if a.Key == attr {
+					nodes = append(nodes, doc)
+				}
+			}
+		}
+	}
+	for c := doc.FirstChild; c != nil; c = c.NextSibling {
+		nodes = append(nodes, TagWithAttr(c, tag, attr)...)
+	}
+	return nodes
+}
+
 func ElementsByTagAndClass(doc *html.Node, tag, class string) []*html.Node {
 	var nodes []*html.Node
 	if tag == "" || class == "" || doc == nil {

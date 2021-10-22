@@ -46,6 +46,25 @@ func TestGetRawAndDoc(t *testing.T) {
 	fmt.Println(doc)
 }
 
+func TestTagWithAttr(t *testing.T) {
+	// u, err := url.Parse("https://www.bbc.com/zhongwen/simp/world-55655858")
+	u, err := url.Parse("https://zh.vietnamplus.vn/Utilities/Print.aspx?contentid=143985")
+	if err != nil {
+		t.Errorf("url Parse err: %v", err)
+	}
+	_, doc, err := GetRawAndDoc(u, 1*time.Minute)
+	if err != nil {
+		t.Errorf("GetRawAndDoc err: %v", err)
+	}
+	tc := TagWithAttr(doc, "time", "datetime")
+	fmt.Println(tc)
+	for _, v := range tc {
+		for _, a := range v.Attr {
+			fmt.Println(a.Key, ":", a.Val)
+		}
+	}
+}
+
 func TestDivWithAttr(t *testing.T) {
 	if err != nil {
 		t.Errorf("url Parse err: %v", err)
