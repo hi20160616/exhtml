@@ -54,6 +54,24 @@ func GetRawAndDoc(url *url.URL, retryTimeout time.Duration) ([]byte, *html.Node,
 	return nil, nil, nil
 }
 
+// ExtractRssGuids get value from <guid>
+func ExtractRssGuids(weburl string) ([]string, error) {
+	resp, err := request(weburl)
+	if err != nil {
+		return nil, err
+	}
+	gf := gofeed.NewParser()
+	feed, err := gf.Parse(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	ls := []string{}
+	for _, e := range feed.Items {
+		ls = append(ls, e.GUID)
+	}
+	return ls, nil
+}
+
 func ExtractRss(weburl string) ([]string, error) {
 	resp, err := request(weburl)
 	if err != nil {

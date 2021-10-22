@@ -14,6 +14,17 @@ import (
 
 var u, err = url.Parse("https://cn.nikkei.com/industry/itelectric-appliance/46280-2021-10-09-01-47-33.html?tmpl=component&print=1&page=")
 
+func TestExtractRssGuids(t *testing.T) {
+	src := "https://zh.vietnamplus.vn/rss/news.rss"
+	ls, err := ExtractRssGuids(src)
+	if err != nil {
+		t.Error(err)
+	}
+	for _, e := range ls {
+		fmt.Println(e)
+	}
+}
+
 func TestExtractRss(t *testing.T) {
 	src := "https://china.kyodonews.net/rss/news.xml"
 	ls, err := ExtractRss(src)
