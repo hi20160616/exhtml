@@ -297,9 +297,9 @@ func ElementsRmByTagAttr(doc *html.Node, tag, attrName, attrValue string) {
 	rmFirstTag := func(n *html.Node) {
 		if n.FirstChild != nil && n.FirstChild.Type == html.ElementNode {
 			if tag == n.FirstChild.Data {
-				if class != "" {
+				if attrName != "" {
 					for _, a := range n.FirstChild.Attr {
-						if a.Key == "class" && a.Val == class {
+						if a.Key == attrName && a.Val == attrValue {
 							n.RemoveChild(n.FirstChild)
 						}
 					}
