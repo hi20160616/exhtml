@@ -296,7 +296,25 @@ func TestElementsRmByTagClass(t *testing.T) {
 	}
 }
 
+func TestElementsByTagAttr(t *testing.T) {
+	s := []byte(testHtml)
+	doc, err := html.Parse(bytes.NewReader(s))
+	if err != nil {
+		log.Fatal(err)
+	}
+	ns := ElementsByTagAttr(doc, "span", "data-reactroot", "")
+	for _, n := range ns {
+		if n.FirstChild == nil {
+			t.Errorf("n.FirstChild is nil")
+		}
+		if n.FirstChild.Data != "Test ElementsByTagAttr" {
+			t.Errorf("want: %s, got: %s", "Test ElementsByTagAttr", n.FirstChild.Data)
+		}
+	}
+}
+
 var testHtml = `
+<span data-reactroot>Test ElementsByTagAttr</span>
 <div class="content article-body" style="width: 100%">
 <div class="ExternalClassD4FD9D4E94174110AEAB3E1D8765742B">
 <div class="article-photo">

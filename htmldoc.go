@@ -147,6 +147,36 @@ func ForEachNode(n *html.Node, pre, post func(n *html.Node)) {
 	}
 }
 
+func ElementsByTagAttr(doc *html.Node, tagName, attrName, attrValue string) []*html.Node {
+	var nodes []*html.Node
+	if tagName == "" || doc == nil {
+		return nil
+	}
+	if doc.Type == html.ElementNode {
+		if tagName == doc.Data {
+			for _, a := range doc.Attr {
+				if attrName == "" {
+					nodes = append(nodes, doc)
+				}
+				if attrName != "" && attrValue == "" {
+					if a.Key == attrName {
+						nodes = append(nodes, doc)
+					}
+				}
+				if attrName != "" && attrValue != "" {
+					if a.Key == attrName && a.Val == attrValue {
+						nodes = append(nodes, doc)
+					}
+				}
+			}
+		}
+	}
+	for c := doc.FirstChild; c != nil; c = c.NextSibling {
+		nodes = append(nodes, ElementsByTagAttr(c, tagName, attrName, attrValue)...)
+	}
+	return nodes
+}
+
 func DivWithAttr(doc *html.Node, attrName, attrValue string) []*html.Node {
 	var nodes []*html.Node
 	if attrName == "" || attrValue == "" || doc == nil {
